@@ -38,7 +38,7 @@ export function AddExpenseDialog() {
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
   const [currency, setCurrency] = useState<Currency>("YEN")
-  const [paidBy, setPaidBy] = useState<User>("Ron")
+  const [paidBy, setPaidBy] = useState<User>("Rong")
   const [category, setCategory] = useState<Category>("food")
   const [date, setDate] = useState(new Date().toISOString().split("T")[0])
 
@@ -58,7 +58,7 @@ export function AddExpenseDialog() {
     setDescription("")
     setAmount("")
     setCurrency("YEN")
-    setPaidBy("Ron")
+    setPaidBy("Rong")
     setCategory("food")
     setDate(new Date().toISOString().split("T")[0])
     setOpen(false)
@@ -136,8 +136,8 @@ export function AddExpenseDialog() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Ron">Ron</SelectItem>
-                  <SelectItem value="Jin">Jin</SelectItem>
+                  <SelectItem value="Rong">Rong</SelectItem>
+                  <SelectItem value="Jinu">Jinu</SelectItem>
                 </SelectContent>
               </Select>
             </div>

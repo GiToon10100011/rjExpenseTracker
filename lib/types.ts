@@ -1,5 +1,5 @@
 export type Currency = "TWD" | "WON" | "YEN"
-export type User = "Ron" | "Jin"
+export type User = "Rong" | "Jinu"
 export type Category = "food" | "utilities" | "rent" | "transport" | "entertainment" | "other"
 
 export interface Expense {

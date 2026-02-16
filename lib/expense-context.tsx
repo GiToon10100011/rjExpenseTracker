@@ -9,9 +9,11 @@ interface ExpenseContextType {
   locale: Locale
   displayCurrency: Currency
   filter: "all" | "paid" | "unpaid"
+  balanceView: "Rong" | "Jinu"
   setLocale: (locale: Locale) => void
   setDisplayCurrency: (currency: Currency) => void
   setFilter: (filter: "all" | "paid" | "unpaid") => void
+  setBalanceView: (view: "Rong" | "Jinu") => void
   addExpense: (expense: Omit<Expense, "id">) => void
   removeExpense: (id: string) => void
   togglePaid: (id: string) => void
@@ -26,7 +28,7 @@ const sampleExpenses: Expense[] = [
     description: "スーパーで買い物",
     amount: 3500,
     currency: "YEN",
-    paidBy: "Ron",
+    paidBy: "Rong",
     category: "food",
     date: "2026-02-10",
     isPaid: false,
@@ -36,7 +38,7 @@ const sampleExpenses: Expense[] = [
     description: "전기요금",
     amount: 45000,
     currency: "WON",
-    paidBy: "Jin",
+    paidBy: "Jinu",
     category: "utilities",
     date: "2026-02-08",
     isPaid: true,
@@ -46,7 +48,7 @@ const sampleExpenses: Expense[] = [
     description: "晩ご飯 - レストラン",
     amount: 8200,
     currency: "YEN",
-    paidBy: "Jin",
+    paidBy: "Jinu",
     category: "food",
     date: "2026-02-12",
     isPaid: false,
@@ -56,7 +58,7 @@ const sampleExpenses: Expense[] = [
     description: "交通カード チャージ",
     amount: 500,
     currency: "TWD",
-    paidBy: "Ron",
+    paidBy: "Rong",
     category: "transport",
     date: "2026-02-14",
     isPaid: false,
@@ -66,7 +68,7 @@ const sampleExpenses: Expense[] = [
     description: "Netflix 月額",
     amount: 15000,
     currency: "WON",
-    paidBy: "Jin",
+    paidBy: "Jinu",
     category: "entertainment",
     date: "2026-02-01",
     isPaid: true,
@@ -78,6 +80,7 @@ export function ExpenseProvider({ children }: { children: ReactNode }) {
   const [locale, setLocale] = useState<Locale>("ja")
   const [displayCurrency, setDisplayCurrency] = useState<Currency>("YEN")
   const [filter, setFilter] = useState<"all" | "paid" | "unpaid">("all")
+  const [balanceView, setBalanceView] = useState<"Rong" | "Jinu">("Rong")
 
   const addExpense = useCallback((expense: Omit<Expense, "id">) => {
     const newExpense: Expense = {
@@ -110,9 +113,11 @@ export function ExpenseProvider({ children }: { children: ReactNode }) {
         locale,
         displayCurrency,
         filter,
+        balanceView,
         setLocale,
         setDisplayCurrency,
         setFilter,
+        setBalanceView,
         addExpense,
         removeExpense,
         togglePaid,

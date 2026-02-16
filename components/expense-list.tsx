@@ -124,9 +124,9 @@ function ExpenseItem({
   // For the payer: they paid the full amount, their share is half = net positive of half
   // For the other: they owe half = net negative of half
   const ronAmount =
-    expense.paidBy === "Ron" ? +convertedHalf : -convertedHalf
+    expense.paidBy === "Rong" ? +convertedHalf : -convertedHalf
   const jinAmount =
-    expense.paidBy === "Jin" ? +convertedHalf : -convertedHalf
+    expense.paidBy === "Jinu" ? +convertedHalf : -convertedHalf
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -181,7 +181,7 @@ function ExpenseItem({
                 <Badge
                   variant="secondary"
                   className={`text-xs ${
-                    expense.paidBy === "Ron"
+                    expense.paidBy === "Rong"
                       ? "bg-chart-2/10 text-chart-2"
                       : "bg-chart-1/10 text-chart-1"
                   }`}
@@ -218,7 +218,7 @@ function ExpenseItem({
           <div className="mt-2 flex items-center justify-between rounded-md bg-secondary/50 px-3 py-1.5">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1 text-xs">
-                <span className="font-medium text-foreground">Ron</span>
+                <span className="font-medium text-foreground">Rong</span>
                 <span
                   className={`font-bold ${
                     ronAmount >= 0 ? "text-chart-2" : "text-chart-1"
@@ -230,7 +230,7 @@ function ExpenseItem({
               </span>
               <span className="text-xs text-muted-foreground">/</span>
               <span className="flex items-center gap-1 text-xs">
-                <span className="font-medium text-foreground">Jin</span>
+                <span className="font-medium text-foreground">Jinu</span>
                 <span
                   className={`font-bold ${
                     jinAmount >= 0 ? "text-chart-2" : "text-chart-1"

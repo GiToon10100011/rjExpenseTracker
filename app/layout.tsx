@@ -10,8 +10,8 @@ const notoSansJP = Noto_Sans_JP({
 })
 
 export const metadata: Metadata = {
-  title: "家計簿 - Ron & Jin",
-  description: "Ron & Jin の共有家計管理システム | Shared Household Expense Manager",
+  title: "家計簿 - Rong & Jinu",
+  description: "Rong & Jinu の共有家計管理システム | Shared Household Expense Manager",
 }
 
 export const viewport: Viewport = {
