@@ -113,8 +113,8 @@ function ExpenseItem({
   expense: ReturnType<typeof useExpenses>["expenses"][0]
   locale: ReturnType<typeof useExpenses>["locale"]
   displayCurrency: ReturnType<typeof useExpenses>["displayCurrency"]
-  onTogglePaid: (id: string) => void
-  onRemove: (id: string) => void
+  onTogglePaid: (id: string) => Promise<void>
+  onRemove: (id: string) => Promise<void>
 }) {
   const halfAmount = expense.amount / 2
   const convertedHalf = convertCurrency(halfAmount, expense.currency, displayCurrency)
@@ -150,7 +150,13 @@ function ExpenseItem({
         <div className="pt-0.5">
           <Checkbox
             checked={expense.isPaid}
-            onCheckedChange={() => onTogglePaid(expense.id)}
+            onCheckedChange={async () => {
+              try {
+                await onTogglePaid(expense.id)
+              } catch (error) {
+                console.error("Failed to toggle paid status:", error)
+              }
+            }}
             className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
             aria-label={expense.isPaid ? t(locale, "markAsUnpaid") : t(locale, "markAsPaid")}
           />
@@ -245,7 +251,13 @@ function ExpenseItem({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onRemove(expense.id)}
+              onClick={async () => {
+                try {
+                  await onRemove(expense.id)
+                } catch (error) {
+                  console.error("Failed to remove expense:", error)
+                }
+              }}
               className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
               aria-label={t(locale, "delete")}
             >

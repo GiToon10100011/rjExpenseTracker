@@ -42,26 +42,31 @@ export function AddExpenseDialog() {
   const [category, setCategory] = useState<Category>("food")
   const [date, setDate] = useState(new Date().toISOString().split("T")[0])
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!description.trim() || !amount || parseFloat(amount) <= 0) return
 
-    addExpense({
-      description: description.trim(),
-      amount: parseFloat(amount),
-      currency,
-      paidBy,
-      category,
-      date,
-      isPaid: false,
-    })
+    try {
+      await addExpense({
+        description: description.trim(),
+        amount: parseFloat(amount),
+        currency,
+        paidBy,
+        category,
+        date,
+        isPaid: false,
+      })
 
-    setDescription("")
-    setAmount("")
-    setCurrency("YEN")
-    setPaidBy("Rong")
-    setCategory("food")
-    setDate(new Date().toISOString().split("T")[0])
-    setOpen(false)
+      setDescription("")
+      setAmount("")
+      setCurrency("YEN")
+      setPaidBy("Rong")
+      setCategory("food")
+      setDate(new Date().toISOString().split("T")[0])
+      setOpen(false)
+    } catch (error) {
+      console.error("Failed to add expense:", error)
+      // You could add toast notification here
+    }
   }
 
   const categories: Category[] = ["food", "utilities", "rent", "transport", "entertainment", "other"]

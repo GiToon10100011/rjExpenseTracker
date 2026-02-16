@@ -1,11 +1,26 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from "react"
 import type { Expense, Currency, User, Category } from "@/lib/types"
 import type { Locale } from "@/lib/i18n"
+import {
+  fetchExpenses,
+  createExpense as apiCreateExpense,
+  updateExpense as apiUpdateExpense,
+  deleteExpense as apiDeleteExpense,
+  toggleExpensePaid as apiToggleExpensePaid,
+} from "@/lib/api"
 
 interface ExpenseContextType {
   expenses: Expense[]
+  isLoading: boolean
   locale: Locale
   displayCurrency: Currency
   filter: "all" | "paid" | "unpaid"
@@ -14,10 +29,10 @@ interface ExpenseContextType {
   setDisplayCurrency: (currency: Currency) => void
   setFilter: (filter: "all" | "paid" | "unpaid") => void
   setBalanceView: (view: "Rong" | "Jinu") => void
-  addExpense: (expense: Omit<Expense, "id">) => void
-  removeExpense: (id: string) => void
-  togglePaid: (id: string) => void
-  updateExpense: (id: string, updates: Partial<Expense>) => void
+  addExpense: (expense: Omit<Expense, "id">) => Promise<void>
+  removeExpense: (id: string) => Promise<void>
+  togglePaid: (id: string) => Promise<void>
+  updateExpense: (id: string, updates: Partial<Expense>) => Promise<void>
 }
 
 const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined)
@@ -76,40 +91,82 @@ const sampleExpenses: Expense[] = [
 ]
 
 export function ExpenseProvider({ children }: { children: ReactNode }) {
-  const [expenses, setExpenses] = useState<Expense[]>(sampleExpenses)
+  const [expenses, setExpenses] = useState<Expense[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [locale, setLocale] = useState<Locale>("ja")
   const [displayCurrency, setDisplayCurrency] = useState<Currency>("YEN")
   const [filter, setFilter] = useState<"all" | "paid" | "unpaid">("all")
   const [balanceView, setBalanceView] = useState<"Rong" | "Jinu">("Rong")
 
-  const addExpense = useCallback((expense: Omit<Expense, "id">) => {
-    const newExpense: Expense = {
-      ...expense,
-      id: Date.now().toString(),
+  // Load expenses on mount
+  useEffect(() => {
+    async function loadExpenses() {
+      try {
+        const data = await fetchExpenses()
+        setExpenses(data)
+      } catch (error) {
+        console.error("Failed to load expenses:", error)
+        // Fallback to sample data if API fails
+        setExpenses(sampleExpenses)
+      } finally {
+        setIsLoading(false)
+      }
     }
-    setExpenses((prev) => [newExpense, ...prev])
+    loadExpenses()
   }, [])
 
-  const removeExpense = useCallback((id: string) => {
-    setExpenses((prev) => prev.filter((e) => e.id !== id))
+  const addExpense = useCallback(async (expense: Omit<Expense, "id">) => {
+    try {
+      const newExpense = await apiCreateExpense(expense)
+      setExpenses((prev) => [newExpense, ...prev])
+    } catch (error) {
+      console.error("Failed to add expense:", error)
+      throw error
+    }
   }, [])
 
-  const togglePaid = useCallback((id: string) => {
-    setExpenses((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, isPaid: !e.isPaid } : e))
-    )
+  const removeExpense = useCallback(async (id: string) => {
+    try {
+      await apiDeleteExpense(id)
+      setExpenses((prev) => prev.filter((e) => e.id !== id))
+    } catch (error) {
+      console.error("Failed to remove expense:", error)
+      throw error
+    }
   }, [])
 
-  const updateExpense = useCallback((id: string, updates: Partial<Expense>) => {
-    setExpenses((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...updates } : e))
-    )
+  const togglePaid = useCallback(async (id: string) => {
+    try {
+      const updated = await apiToggleExpensePaid(id)
+      setExpenses((prev) =>
+        prev.map((e) => (e.id === id ? updated : e))
+      )
+    } catch (error) {
+      console.error("Failed to toggle expense paid status:", error)
+      throw error
+    }
   }, [])
+
+  const updateExpense = useCallback(
+    async (id: string, updates: Partial<Expense>) => {
+      try {
+        const updated = await apiUpdateExpense(id, updates)
+        setExpenses((prev) =>
+          prev.map((e) => (e.id === id ? updated : e))
+        )
+      } catch (error) {
+        console.error("Failed to update expense:", error)
+        throw error
+      }
+    },
+    []
+  )
 
   return (
     <ExpenseContext.Provider
       value={{
         expenses,
+        isLoading,
         locale,
         displayCurrency,
         filter,

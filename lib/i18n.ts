@@ -146,7 +146,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     jinuShouldPay: "Jinu가 지불해야 할 금액",
   },
   en: {
-    appTitle: "Household",
+    appTitle: "Expense Tracker",
     appSubtitle: "Rong & Jinu Shared Expense Manager",
     addExpense: "Add Expense",
     description: "Description",
